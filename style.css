@@ -7,7 +7,6 @@
 body {
   display: flex;
   justify-content: center;
-  outline: solid red 1px;
   height: 100vh;
   padding-top: 50px;
 }
@@ -18,7 +17,6 @@ body {
   align-items: center;
   height: 60vh;
   width: 30%;
-  outline: solid 1px red;
   margin-right: 10px;
 }
 .info_blk {
@@ -55,9 +53,6 @@ body {
   margin-bottom: 10px;
   cursor: pointer;
 }
-.chart_area {
-  border: solid 1px black;
-}
 .charts {
   position: relative;
   width: 70vw;
@@ -75,7 +70,6 @@ body {
   body {
     flex-direction: column;
     justify-content: start;
-    /* align-items: center; */
   }
   .info {
     width: 100%;
