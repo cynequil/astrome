@@ -7,6 +7,9 @@ const ctx3 = document.getElementById("myChart3").getContext("2d");
 const canvas1 = document.getElementById("myChart1");
 const canvas2 = document.getElementById("myChart2");
 const canvas3 = document.getElementById("myChart3");
+const ratio_btn = document.getElementById("ratio_btn");
+const data_btn = document.getElementById("data_btn");
+const plot_btn = document.getElementById("plot_btn");
 const coordinate = [];
 let start;
 let prevTime;
@@ -53,6 +56,7 @@ const handleClick = (id) => {
     canvas1.style.zIndex = "100";
     canvas2.style.zIndex = "0";
     canvas3.style.zIndex = "0";
+    ratio_btn.classList.add("active");
   }
   if (id === "data_btn") {
     canvas2.style.zIndex = "100";
