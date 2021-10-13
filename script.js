@@ -11,18 +11,24 @@ const ratio_btn = document.getElementById("ratio_btn");
 const data_btn = document.getElementById("data_btn");
 const plot_btn = document.getElementById("plot_btn");
 const coordinate = [];
+const data = [];
+let chart_data_cnt = 0;
+let myChart1;
+let myChart2;
+let myChart3;
+
 let start;
 let prevTime;
 let currentTime;
 let timeFlag = false;
 let I = 0;
-const data = [];
 
 const socket = new WebSocket("wss://coding-ws.astrome.co:2096");
 
 socket.onopen = (e) => {
   start = Date.now();
   console.log("Connection open");
+  render_chart();
 };
 socket.onmessage = (e) => {
   let ob = JSON.parse(e.data);
@@ -40,7 +46,28 @@ socket.onmessage = (e) => {
   i_info.value = I;
   n_info.value = coordinate.length;
   in_info.value = data[data.length - 1].ratio;
-  if (coordinate.length === 1000) socket.close();
+  myChart1.data.labels.push(data[data.length - 1].time);
+  myChart1.data.datasets[0].data.push(data[data.length - 1].ratio);
+  myChart1.update("quiet");
+  myChart2.data.labels.push(coordinate[coordinate.length - 1].time);
+  myChart2.data.datasets[0].data.push(coordinate[coordinate.length - 1].x);
+  myChart2.data.datasets[1].data.push(coordinate[coordinate.length - 1].y);
+  myChart2.update("quiet");
+  myChart3.data.datasets[0].data.push(coordinate[coordinate.length - 1]);
+  myChart3.update("quiet");
+  chart_data_cnt = chart_data_cnt + 1;
+  if (chart_data_cnt === 2) {
+    console.log(chart_data_cnt);
+    myChart1.data.labels.shift();
+    myChart1.data.datasets[0].data.shift();
+    myChart2.data.labels.shift();
+    myChart2.data.datasets[0].data.shift();
+    myChart2.data.datasets[1].data.shift();
+    myChart3.data.datasets[0].data.shift();
+    chart_data_cnt = 0;
+    console.log(chart_data_cnt);
+  }
+  // if (coordinate.length === 500) socket.close();
 };
 socket.onerror = (e) => {
   console.log(e.error);
@@ -48,7 +75,6 @@ socket.onerror = (e) => {
 socket.onclose = (e) => {
   console.log(data);
   console.log("Connection Terminated");
-  render_chart();
 };
 //Event Handling
 const handleClick = (id) => {
@@ -99,18 +125,20 @@ const isInside = (ob) => {
   if (ob.x * ob.x + ob.y * ob.y <= rad * rad) return true;
   else return false;
 };
-
 //Redering Chart
 const render_chart = () => {
   //For ratio graph
-  const myChart1 = new Chart(ctx1, {
+  Chart.defaults.set("plugins.streaming", {
+    duration: 20000,
+  });
+  myChart1 = new Chart(ctx1, {
     type: "line",
     data: {
-      labels: extractTime(data),
+      labels: [],
       datasets: [
         {
           label: "I/N ratio",
-          data: extractRatio(data),
+          data: [],
           backgroundColor: "red",
         },
       ],
@@ -140,20 +168,20 @@ const render_chart = () => {
     },
   });
   //For data graph
-  const myChart2 = new Chart(ctx2, {
+  myChart2 = new Chart(ctx2, {
     type: "line",
     data: {
-      labels: extractTime(coordinate),
+      labels: [],
       datasets: [
         {
           label: "x-coordinates",
-          data: extractX(),
+          data: [],
           backgroundColor: "red",
           borderColor: "red",
         },
         {
           label: "y-coordinates",
-          data: extractY(),
+          data: [],
           backgroundColor: "blue",
           borderColor: "blue",
         },
@@ -184,14 +212,14 @@ const render_chart = () => {
     },
   });
   //For plot graph
-  const myChart3 = new Chart(ctx3, {
+  myChart3 = new Chart(ctx3, {
     type: "scatter",
     data: {
       datasets: [
         {
           label: "x-y values plot",
-          data: coordinate,
-          backgroundColor: "lightgreen",
+          data: [],
+          backgroundColor: "green",
         },
       ],
     },

@@ -10,14 +10,6 @@ body {
   height: 100vh;
   padding-top: 50px;
 }
-#msg {
-  position: absolute;
-  top: 0;
-  left: 0;
-  padding: 5px;
-  width: 100%;
-  text-align: center;
-}
 .info {
   display: flex;
   flex-direction: column;
